@@ -1,0 +1,15 @@
+# Base for FastAPI
+fastapi==0.111.1
+uvicorn==0.30.3
+pydantic==2.8.2
+
+# For Database
+SQLAlchemy==2.0.31
+alembic==1.13.2
+asyncpg==0.29.0
+
+# Auth
+fastapi-users==13.0.0
+fastapi-users[sqlalchemy]
+
+python-dotenv
