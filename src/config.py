@@ -7,8 +7,9 @@ class Settings(BaseSettings):
     DB_NAME: str
     DB_USER: str
     DB_PASS: str
-    JWT_SECRET_KEY: str
-    USER_MANAGER_SECRET_KEY: str
+    SECRET_KEY: str
+    ALGORITHM: str
+    ACCESS_TOKEN_EXPIRE_MINUTES: int
 
     @property
     def DATABASE_URL_asyncpg(self):

@@ -54,6 +54,9 @@ Create a **.env** file in the project directory and fill it with your data:
 
 ---
 
+    docker build . --tag cleanbuy
+    docker run -p 80:80 cleanbuy
+
 ---
 
 ### Author

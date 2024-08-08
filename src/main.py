@@ -1,10 +1,11 @@
+from fastapi import FastAPI, Depends
+
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
-
-from src.database import delete_tables, create_tables
-from src.routing.buyer_router import router as buyer_router
-from src.routing.auth_router import router as auth_router
+from src.database import create_tables, delete_tables
+from src.auth import auth_router, AuthManager
+from src.schemas import UserRead
+from src.users import users_router
 
 
 @asynccontextmanager
@@ -18,5 +19,12 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="CleanBuy", lifespan=lifespan)
-app.include_router(buyer_router)
 app.include_router(auth_router)
+app.include_router(users_router)
+
+
+@app.get("/", tags=["root"])
+async def root(current_user: UserRead = Depends(AuthManager.get_current_user)):
+    return {
+        "message": f"Welcome inside CleanBuy API, {current_user.username}!"
+    }

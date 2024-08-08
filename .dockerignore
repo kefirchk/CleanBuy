@@ -1,0 +1,15 @@
+# Ignore docker files
+.dockerignore
+Dockerfile
+docker-compose
+
+# Ignore .git
+/.git
+.gitignore
+
+# Ignore editor specific configs
+/.idea
+__pycache__
+
+venv
+.env
