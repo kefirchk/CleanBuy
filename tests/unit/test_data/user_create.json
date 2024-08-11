@@ -1,0 +1,7 @@
+{
+  "username": "existing_user",
+  "password": "password",
+  "email": "email@example.com",
+  "role": "BUYER",
+  "buyer_information": null
+}

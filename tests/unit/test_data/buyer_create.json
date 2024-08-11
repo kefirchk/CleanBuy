@@ -1,0 +1,31 @@
+{
+  "username": "new_user",
+  "password": "password",
+  "email": "email@example.com",
+  "role": "BUYER",
+  "buyer_information": {
+    "location": {
+      "city": "City",
+      "country": "Country"
+    },
+    "import_countries": [
+      "CountryA",
+      "CountryB"
+    ],
+    "product_segment": "LUXURY",
+    "commission_rate": {
+      "min_rate": 10,
+      "max_rate": 20
+    },
+    "price_range": {
+      "min_price": 100,
+      "max_price": 500
+    },
+    "delivery_options": "INCLUDED",
+    "payment_options": [
+      "ON_DELIVERY",
+      "CARD_PAYMENT"
+    ],
+    "prepayment_percentage": 50
+  }
+}

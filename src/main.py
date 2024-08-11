@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 from src.database import create_tables, delete_tables
 from src.auth import auth_router, AuthManager
 from src.schemas import UserRead
-from src.users import users_router
+from src.users_operations import users_router
 
 
 @asynccontextmanager

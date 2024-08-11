@@ -1,6 +1,6 @@
 from typing import List
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 from src.schemas import Location, CommissionRate, PriceRange
 from src.schemas.custom_types import ProductSegmentType, PaymentOptionType, DeliveryOptionType
@@ -8,7 +8,7 @@ from src.schemas.custom_types import ProductSegmentType, PaymentOptionType, Deli
 
 class BuyerInformation(BaseModel):
     location: Location
-    import_countries: List[str] = Field(example=["USA", "UK"])
+    import_countries: List[str] = Field(examples=[["USA", "UK"]])
     product_segment: ProductSegmentType
     commission_rate: CommissionRate
     price_range: PriceRange
@@ -30,6 +30,4 @@ class BuyerInformation(BaseModel):
             location=obj.location,
             commission_rate=obj.commission_rate
         )
-
-    class Config:
-        from_attributes = True  # orm_mode
+    model_config = ConfigDict(from_attributes = True)

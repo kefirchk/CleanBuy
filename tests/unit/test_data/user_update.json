@@ -1,0 +1,30 @@
+{
+  "username": "vlad",
+  "password": "password",
+  "email": "vlad@example.com",
+  "buyer_information": {
+    "location": {
+      "city": "Nesvizh",
+      "country": "Belarus"
+    },
+    "import_countries": [
+      "Poland",
+      "Latvia"
+    ],
+    "product_segment": "LUXURY",
+    "commission_rate": {
+      "min_rate": 15,
+      "max_rate": 25
+    },
+    "price_range": {
+      "min_price": 100,
+      "max_price": 5000
+    },
+    "delivery_options": "INCLUDED",
+    "payment_options": [
+      "ON_DELIVERY",
+      "CARD_PAYMENT"
+    ],
+    "prepayment_percentage": 60
+  }
+}

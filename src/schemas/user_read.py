@@ -1,6 +1,6 @@
 from typing_extensions import Self
 
-from pydantic import Field
+from pydantic import Field, ConfigDict
 
 from src.schemas.custom_types import RoleType
 from src.schemas import User, BuyerInformation
@@ -20,7 +20,4 @@ class UserRead(User):
             email=obj.email,
             buyer_information=BuyerInformation.from_orm(obj.buyer_information) if obj.buyer_information else None
         )
-
-    class Config:
-        from_attributes = True  # orm_mode
-        use_enum_values = True
+    model_config = ConfigDict(from_attributes=True, use_enum_values=True)

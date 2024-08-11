@@ -11,5 +11,12 @@ docker-compose
 /.idea
 __pycache__
 
+# Ignore environments
 venv
 .env
+
+# Ignore testing
+cov_html
+.pytest_cache
+tests
+pyproject.toml

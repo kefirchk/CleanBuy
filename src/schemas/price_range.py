@@ -1,9 +1,9 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class PriceRange(BaseModel):
     min_price: float = Field(default=1, gt=0, examples=[10, 20, 30])
     max_price: float = Field(default=1, gt=0, examples=[10, 20, 30])
 
-    class Config:
-        from_attributes = True  # orm_mode
+    model_config = ConfigDict(from_attributes=True)
+

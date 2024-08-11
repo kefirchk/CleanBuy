@@ -1,0 +1,8 @@
+{
+  "id": 1,
+  "role": "USER",
+  "username": "test_user",
+  "email": "test@example.com",
+  "hashed_password": "hashed_password",
+  "buyer_information": null
+}

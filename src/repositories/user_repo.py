@@ -9,7 +9,7 @@ from src.auth.utils import get_password_hash
 from src.database import new_session
 from src.models import UserOrm, BuyerInformationOrm, LocationOrm, CommissionRateOrm, PriceRangeOrm, PaymentOptionsOrm
 from src.repositories import BuyerInformationRepo
-from src.schemas import UserCreate, UserUpdate, BuyerInformation
+from src.schemas import UserCreate, UserUpdate
 from src.schemas.custom_types import RoleType
 
 
@@ -20,7 +20,7 @@ class UserRepo:
         if other_user:
             return None
 
-        buyer_information_data = user_create.buyer_information.dict() if user_create.buyer_information else None
+        buyer_information_data = user_create.buyer_information.model_dump( ) if user_create.buyer_information else None
         buyer_information_orm = None
 
         if user_create.role == RoleType.BUYER:
@@ -78,14 +78,13 @@ class UserRepo:
     async def get_users(cls) -> List[UserOrm] | None:
         async with new_session() as session:
             # TODO: add pagination
-
             query = select(UserOrm).options(joinedload(UserOrm.buyer_information))
             result = await session.execute(query)
             return result.scalars().all()
 
     @classmethod
     async def __update_user_attributes(cls, user_orm: UserOrm, user_update: UserUpdate):
-        user_update_dict = user_update.dict(
+        user_update_dict = user_update.model_dump(
             exclude_none=True,
             exclude_unset=True,
             exclude={'buyer_information'}
@@ -105,21 +104,12 @@ class UserRepo:
             user_update: UserUpdate
     ):
         user_orm.buyer_information.payment_options.clear()
-
-        # Добавление новых опций оплаты, если они существуют и валидны
         valid_payment_options = []
         for option_type in user_update.buyer_information.payment_options:
-            # stmt = select(PaymentOptionsOrm).filter_by(payment_option=option_type)
-            # result = await session.execute(stmt)
-            # payment_option = result.scalar_one_or_none()
-
-            # if payment_option is None:
             payment_option = PaymentOptionsOrm(payment_option=option_type)
             session.add(payment_option)
             await session.commit()
             await session.refresh(payment_option)
-
-            #if payment_option:  # Убеждаемся, что payment_option не None
             valid_payment_options.append(payment_option)
 
         user_orm.buyer_information.payment_options.extend(valid_payment_options)
@@ -136,13 +126,10 @@ class UserRepo:
             user_orm = result.scalar_one_or_none()
 
             if user_orm:
-                # Обновляем основные поля пользователя
                 user_orm = await cls.__update_user_attributes(user_orm=user_orm, user_update=user_update)
 
-                # Проверка роли пользователя
                 if user_orm.role == RoleType.BUYER and user_update.buyer_information:
                     if not user_orm.buyer_information:
-                        # Если у пользователя нет BuyerInformationOrm, создаем новый
                         user_orm.buyer_information = BuyerInformationOrm()
 
                     buyer_info_orm: BuyerInformationOrm = user_orm.buyer_information
@@ -157,12 +144,9 @@ class UserRepo:
                     user_orm = await cls.__update_payment_options(session, user_orm, user_update)
 
                 else:
-                    # Если роль пользователя не BUYER, удаляем информацию о покупателе
                     user_orm.buyer_information = None
 
-                # Сохраняем изменения
                 await session.commit()
-
             return user_orm
 
     @staticmethod
