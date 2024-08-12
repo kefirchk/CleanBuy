@@ -1,11 +1,12 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from contextlib import asynccontextmanager
 
 from src.database import create_tables, delete_tables
-from src.auth import auth_router, AuthManager
-from src.schemas import UserRead
+from src.auth import auth_router
 from src.users_operations import users_router
+from src.config import origins
 
 
 @asynccontextmanager
@@ -22,9 +23,18 @@ app = FastAPI(title="CleanBuy", lifespan=lifespan)
 app.include_router(auth_router)
 app.include_router(users_router)
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
+    allow_headers=["Content-Type", "Set-Cookie", "Access-Control-Allow-Headers", "Access-Control-Allow-Origin",
+                   "Authorization"],
+)
+
 
 @app.get("/", tags=["root"])
-async def root(current_user: UserRead = Depends(AuthManager.get_current_user)):
+async def root():
     return {
-        "message": f"Welcome inside CleanBuy API, {current_user.username}!"
+        "message": f"Welcome inside CleanBuy API!"
     }
