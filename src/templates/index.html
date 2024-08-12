@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block head %}
+<style>
+    .hero {
+        {#background-image: url('{{ url_for("static", path="background.jpg") }}');#}
+        background-size: cover;
+        background-position: center;
+        color: black;
+        padding: 100px 20px;
+        text-align: center;
+    }
+
+    .hero h1 {
+        font-size: 3rem;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .hero p {
+        font-size: 1.5rem;
+        margin-bottom: 40px;
+    }
+
+    .hero button {
+        background-color: #1e90ff;
+        color: white;
+        padding: 10px 20px;
+        font-size: 1rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .hero button:hover {
+        background-color: #1c86ee;
+    }
+
+    .info-section {
+        padding: 50px 20px;
+        text-align: center;
+    }
+
+    .info-section h2 {
+        font-size: 2rem;
+        margin-bottom: 20px;
+    }
+
+    .info-section p {
+        font-size: 1.25rem;
+        margin-bottom: 30px;
+    }
+
+    .info-section .features {
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+    }
+
+    .info-section .feature {
+        width: 30%;
+        margin-bottom: 20px;
+    }
+
+    .info-section .feature h3 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+    }
+
+    .info-section .feature p {
+        font-size: 1rem;
+        color: #555;
+    }
+
+    .footer {
+        background-color: #333;
+        color: white;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .footer p {
+        margin: 0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <h1>Welcome to CleanBuy!</h1>
+    <p>Find users, connect with them, and chat instantly.</p>
+    <button onclick="window.location.href='/pages/search/'">Start Searching</button>
+</div>
+
+<div class="info-section">
+    <h2>About Our Site</h2>
+    <p>This platform allows you to search for users, view their profiles, and communicate with them through our chat feature.</p>
+    <div class="features">
+        <div class="feature">
+            <h3>Search Users</h3>
+            <p>Easily find other users based on their username or other criteria.</p>
+        </div>
+        <div class="feature">
+            <h3>View Profiles</h3>
+            <p>Get detailed information about other users and their preferences.</p>
+        </div>
+        <div class="feature">
+            <h3>Instant Messaging</h3>
+            <p>Connect with users and start chatting instantly through our built-in messaging system.</p>
+        </div>
+    </div>
+</div>
+
+<div class="footer">
+    <p>&copy; 2024 Alexey Klimovich. All rights reserved.</p>
+</div>
+{% endblock %}

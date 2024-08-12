@@ -3,9 +3,12 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from contextlib import asynccontextmanager
 
+from starlette.staticfiles import StaticFiles
+
 from src.database import create_tables, delete_tables
 from src.auth import auth_router
 from src.users_operations import users_router
+from src.pages.router import router as page_router
 from src.config import origins
 
 
@@ -22,6 +25,9 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="CleanBuy", lifespan=lifespan)
 app.include_router(auth_router)
 app.include_router(users_router)
+app.include_router(page_router)
+
+app.mount("/static", StaticFiles(directory="src/static"), name="static")
 
 app.add_middleware(
     CORSMiddleware,
@@ -33,7 +39,7 @@ app.add_middleware(
 )
 
 
-@app.get("/", tags=["root"])
+@app.get("/", tags=["Root"])
 async def root():
     return {
         "message": f"Welcome inside CleanBuy API!"

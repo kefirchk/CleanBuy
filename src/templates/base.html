@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.tailwindcss.com"></script>
+    {% block head %}{% endblock %}
+    <title>CleanBuy</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(to bottom, #f5f7fa, #c3cfe2);
+            color: #333;
+        }
+        nav {
+            background: #fff;
+            padding: 10px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        nav ul li {
+            margin: 0 15px;
+        }
+        nav ul li a {
+            text-decoration: none;
+            color: #333;
+            transition: color 0.3s ease;
+        }
+        nav ul li a:hover {
+            color: #007acc;
+        }
+        #content {
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="flex justify-between items-center px-10">
+        <ul class="flex items-center">
+            <li class="text-3xl font-bold"><a href="/pages/home">CleanBuy</a></li>
+        </ul>
+        <ul class="flex items-center">
+            <li><a href="#">My Account</a></li>
+            <li><a href="#">Log out</a></li>
+        </ul>
+    </nav>
+    <hr class="mt-2">
+    <div id="content" class="container mx-auto">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>
