@@ -1,18 +1,19 @@
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock
 
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.models import UserOrm, PaymentOptionsOrm, BuyerInformationOrm
-from src.repositories import UserRepo, BuyerInformationRepo
-from src.schemas import UserCreate, UserUpdate
-from src.schemas.custom_types import PaymentOptionType, RoleType
+from src.users_crud.schemas import UserCreate, UserUpdate
+from src.users_crud.schemas.custom_types import PaymentOptionType
+from src.users_crud.models import PaymentOptionsOrm, BuyerInformationOrm, UserOrm
+from src.users_crud.repositories import UserRepo
+
 from tests.unit.conftest import new_session_test
 
 
 async def test_create_user_existing_user(mocker, user_create_data):
     mock_get_user = mocker.patch(
-        'src.repositories.user_repo.UserRepo.get_user',
+        'src.users_crud.repositories.user_repo.UserRepo.get_user',
         new_callable=AsyncMock,
         return_value=UserOrm(username="existing_user")
     )
@@ -25,12 +26,12 @@ async def test_create_user_existing_user(mocker, user_create_data):
 
 async def test_create_user_success(mocker, buyer_create_data):
     mock_get_user = mocker.patch(
-        'src.repositories.user_repo.UserRepo.get_user',
+        'src.users_crud.repositories.user_repo.UserRepo.get_user',
         new_callable=AsyncMock,
         return_value=None
     )
     mocker.patch(
-        'src.repositories.user_repo.new_session',
+        'src.users_crud.repositories.user_repo.new_session',
         new_session_test
     )
     user_create = UserCreate(**buyer_create_data)
@@ -55,7 +56,7 @@ async def test_get_user_by_id(mocker):
     user_orm = UserOrm(id=user_id, username="test_user")
 
     mocker.patch(
-        'src.repositories.user_repo.new_session',
+        'src.users_crud.repositories.user_repo.new_session',
         new_session_test
     )
     mock_result = mocker.Mock()
@@ -75,7 +76,7 @@ async def test_get_user_by_username(mocker):
     user_orm = UserOrm(id=1, username=username)
 
     mocker.patch(
-        'src.repositories.user_repo.new_session',
+        'src.users_crud.repositories.user_repo.new_session',
         new_session_test
     )
     mock_result = mocker.Mock()
@@ -94,7 +95,7 @@ async def test_get_user_not_found(mocker):
     username = "non_existent_user"
 
     mocker.patch(
-        'src.repositories.user_repo.new_session',
+        'src.users_crud.repositories.user_repo.new_session',
         new_session_test
     )
     mock_execute = mocker.patch(
@@ -113,7 +114,7 @@ async def test_get_users(mocker):
     expected_users = [user_orm_1, user_orm_2]
 
     mocker.patch(
-        'src.repositories.user_repo.new_session',
+        'src.users_crud.repositories.user_repo.new_session',
         new_session_test
     )
     mock_result = mocker.Mock()
@@ -137,7 +138,7 @@ async def test_update_user_attributes_password(mocker):
     )
 
     mock_get_password_hash = mocker.patch(
-        'src.repositories.user_repo.get_password_hash',
+        'src.users_crud.repositories.user_repo.get_password_hash',
         return_value="new_hashed_password"
     )
     updated_user = await UserRepo._UserRepo__update_user_attributes(user_orm, user_update)
@@ -196,25 +197,25 @@ async def test_update_user(mocker, user_update_data):
     mock_session = mocker.MagicMock(spec=AsyncSession)
 
     mock_execute = mocker.patch(
-        'src.repositories.user_repo.AsyncSession.execute',
+        'src.users_crud.repositories.user_repo.AsyncSession.execute',
         return_value=mocker.MagicMock(
             scalar_one_or_none=lambda: user_orm
         )
     )
     mock_commit = mocker.patch(
-        'src.repositories.user_repo.AsyncSession.commit',
+        'src.users_crud.repositories.user_repo.AsyncSession.commit',
         return_value=None
     )
     mock_update_user_attributes = mocker.patch(
-        'src.repositories.user_repo.UserRepo._UserRepo__update_user_attributes',
+        'src.users_crud.repositories.user_repo.UserRepo._UserRepo__update_user_attributes',
         return_value=user_orm
     )
     mock_update_buyer_information = mocker.patch(
-        'src.repositories.user_repo.BuyerInformationRepo.update_buyer_information',
+        'src.users_crud.repositories.user_repo.BuyerInformationRepo.update_buyer_information',
         return_value=buyer_information_orm
     )
     mock_update_payment_options = mocker.patch(
-        'src.repositories.user_repo.UserRepo._UserRepo__update_payment_options',
+        'src.users_crud.repositories.user_repo.UserRepo._UserRepo__update_payment_options',
         return_value=user_orm
     )
     updated_user = await UserRepo.update_user(1, user_update)
@@ -229,19 +230,19 @@ async def test_delete_user(mocker):
     user_id = 1
     user_orm = AsyncMock()
     mock_get_user = mocker.patch(
-        'src.repositories.user_repo.UserRepo.get_user',
+        'src.users_crud.repositories.user_repo.UserRepo.get_user',
         return_value=user_orm
     )
     mock_delete = mocker.patch(
-        'src.repositories.user_repo.AsyncSession.delete',
+        'src.users_crud.repositories.user_repo.AsyncSession.delete',
         return_value=None
     )
     mock_commit = mocker.patch(
-        'src.repositories.user_repo.AsyncSession.commit',
+        'src.users_crud.repositories.user_repo.AsyncSession.commit',
         return_value=None
     )
     mock_new_session = mocker.patch(
-        'src.repositories.user_repo.new_session',
+        'src.users_crud.repositories.user_repo.new_session',
         return_value=new_session_test()
     )
     result = await UserRepo.delete_user(user_id)
@@ -257,19 +258,19 @@ async def test_delete_user(mocker):
 async def test_delete_user_no_user(mocker):
     user_id = 1
     mock_get_user = mocker.patch(
-        'src.repositories.user_repo.UserRepo.get_user',
+        'src.users_crud.repositories.user_repo.UserRepo.get_user',
         return_value=None
     )
     mock_new_session = mocker.patch(
-        'src.repositories.user_repo.new_session',
+        'src.users_crud.repositories.user_repo.new_session',
         return_value=new_session_test()
     )
     mock_delete = mocker.patch(
-        'src.repositories.user_repo.AsyncSession.delete',
+        'src.users_crud.repositories.user_repo.AsyncSession.delete',
         return_value=None
     )
     mock_commit = mocker.patch(
-        'src.repositories.user_repo.AsyncSession.commit',
+        'src.users_crud.repositories.user_repo.AsyncSession.commit',
         return_value=None
     )
 

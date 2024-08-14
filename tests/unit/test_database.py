@@ -1,9 +1,9 @@
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock
 
 from sqlalchemy.ext.asyncio import AsyncEngine
 
-from src.database import create_tables, engine, delete_tables
-from src.models import Base
+from src.database import create_tables, delete_tables
+from src.database import Base
 
 
 async def test_create_tables(mocker):

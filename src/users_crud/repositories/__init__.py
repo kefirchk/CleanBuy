@@ -1,0 +1,2 @@
+from src.users_crud.repositories.buyer_information_repo import BuyerInformationRepo
+from src.users_crud.repositories.user_repo import UserRepo

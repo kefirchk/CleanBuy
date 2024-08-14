@@ -3,8 +3,9 @@ from typing import Annotated, List
 from fastapi import APIRouter, Request, Depends
 from fastapi.templating import Jinja2Templates
 
-from src.schemas import UserRead
-from src.users_operations.router import get_users, get_me
+from src.users_crud.schemas import UserRead
+from src.users_crud.router import get_users
+
 
 router = APIRouter(
     prefix="/pages",
@@ -22,6 +23,11 @@ def get_base_page(request: Request):
 @router.get("/home")
 def get_home_page(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
+
+
+@router.get("/chat")
+def get_chat_page(request: Request):
+    return templates.TemplateResponse("chat.html", {"request": request})
 
 
 @router.get("/search/")

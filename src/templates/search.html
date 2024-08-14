@@ -20,18 +20,68 @@
         messageButtons.forEach(button => {
             button.addEventListener("click", function() {
                 const username = this.getAttribute("data-username");
-                const chatContainer = document.getElementById("chat_container");
-                chatContainer.innerHTML = `
-                    <h2 class="text-xl font-bold mb-4">Chat with ${username}</h2>
-                    <div class="bg-gray-100 p-4 rounded-lg mb-4">
-                        <p class="text-sm text-gray-700">This is the beginning of your conversation with ${username}.</p>
-                    </div>
-                    <textarea class="w-full p-2 border-2 border-gray-300 rounded-lg mb-2" placeholder="Write a message..."></textarea>
-                    <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">Send</button>
-                `;
+                openChat(username);
             });
         });
     };
+
+    function openChat(username) {
+        const chatContainer = document.getElementById("chat_container");
+        chatContainer.innerHTML = `
+            <h2 class="text-xl font-bold mb-4">Chat with ${username}</h2>
+            <ul id="messages" class="bg-gray-100 p-4 rounded-lg mb-4 h-64 overflow-y-auto"></ul>
+            <form id="chat_form" class="flex flex-col">
+                <input type="text" id="messageText" class="w-full p-2 border-2 border-gray-300 rounded-lg mb-2" placeholder="Write a message..." autocomplete="off"/>
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">Send</button>
+            </form>
+        `;
+
+        let client_id = Date.now();
+        let ws = new WebSocket(`ws://localhost:8000/chat/ws/${client_id}`);
+        ws.onmessage = function(event) {
+            append_message(event.data);
+        };
+
+        const chatForm = document.getElementById("chat_form");
+        chatForm.addEventListener("submit", function(event) {
+            event.preventDefault();
+            sendMessage();
+        });
+
+        function sendMessage() {
+            const input = document.getElementById("messageText");
+            ws.send(input.value);
+            input.value = '';
+        }
+
+        function append_message(msg, isHeader = false) {
+            let messages = document.getElementById('messages');
+            let message = document.createElement('li');
+            if (isHeader) {
+                message.classList.add('message-header');
+            } else {
+                message.classList.add('text-sm', 'text-gray-800', 'bg-white', 'p-2', 'mb-1', 'rounded-lg', 'shadow');
+            }
+            let content = document.createTextNode(msg);
+            message.appendChild(content);
+            messages.appendChild(message);
+        }
+
+        // Load last messages
+        async function getLastMessages() {
+            const response = await fetch(`/chat/last_messages?username=${username}`, { method: 'GET' });
+            return response.json();
+        }
+
+        getLastMessages()
+            .then(messages => {
+                append_message('Last 10 messages:', true);
+                messages.forEach(msg => {
+                    append_message(msg.message);
+                });
+                append_message('New messages:', true);
+            });
+    }
 </script>
 
 <style>
@@ -49,6 +99,28 @@
         width: 65%;
         padding: 20px;
     }
+    #messages {
+        height: 300px;
+        overflow-y: auto;
+        border: 1px solid #ddd;
+        padding: 10px;
+        background-color: #f9f9f9;
+        margin-bottom: 20px;
+    }
+    #chat_form {
+        display: flex;
+        flex-direction: column;
+    }
+    .message-header {
+        font-size: 1em;
+        color: #4a5568; /* Серый цвет текста */
+        font-weight: 600;
+        padding: 5px 0;
+        margin: 10px 0;
+        text-align: center;
+        background-color: #edf2f7; /* Светлый серо-голубой фон */
+        border-radius: 8px;
+    }
 </style>
 {% endblock %}
 
@@ -65,7 +137,7 @@
         <span class="text-gray-600">E.g. Bob, Alice, etc.</span>
         {% for user in users %}
             <div class="flex flex-col md:flex-row rounded-lg border-2 border-gray-300 p-5 mt-5 bg-white shadow-md">
-                <img src="{{ url_for('static', path='user.png') }}" alt="User image" class="mr-5 rounded-lg w-24 h-24 object-cover">
+                <img src="{{ url_for('static', path='images/user.png') }}" alt="User image" class="mr-5 rounded-lg w-24 h-24 object-cover">
                 <div class="flex flex-col justify-between">
                     <div>
                         <span class="text-2xl font-bold">{{ user.username }}</span>
@@ -108,3 +180,4 @@
     </div>
 </div>
 {% endblock %}
+

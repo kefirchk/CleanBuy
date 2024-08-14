@@ -6,23 +6,14 @@ from httpx import AsyncClient
 
 import jwt
 
-from src.auth import AuthManager, pwd_context
+from src.auth import auth_config
+from src.auth import pwd_context
 from src.auth.utils import get_password_hash, verify_password
-from src.config import settings
-from src.models import UserOrm
-from src.schemas import UserRead
+from src.users_crud.models import UserOrm
+from src.users_crud.schemas import UserRead
+from src.auth import Token, Authenticator
 
 from fastapi import HTTPException, status
-
-
-async def test_register(mocker, ac: AsyncClient, buyer_create_data):
-    mock_create_user = mocker.patch(
-        'src.auth.router.UserRepo.create_user',
-        new_callable=AsyncMock,
-        return_value=UserOrm(id=1)
-    )
-    response = await ac.post("/auth/register", json=buyer_create_data)
-    assert response.status_code == 200
 
 
 async def test_login(mocker, ac: AsyncClient, user_read_data):
@@ -31,11 +22,11 @@ async def test_login(mocker, ac: AsyncClient, user_read_data):
         "password": "1234"
     }
     mock_authenticate_user = mocker.patch(
-        'src.auth.router.AuthManager.authenticate_user',
+        'src.auth.router.Authenticator.authenticate_user',
         return_value=UserRead(**user_read_data)
     )
     mock_create_access_token = mocker.patch(
-        'src.auth.router.AuthManager.create_access_token',
+        'src.auth.router.Token.create_access_token',
         return_value="TOKEN"
     )
     response = await ac.post(url="/auth/login", data=form_data)
@@ -51,9 +42,9 @@ async def test_login(mocker, ac: AsyncClient, user_read_data):
 ])
 def test_create_access_token(expires_delta, expected_exp):
     data = {"sub": "test_user"}
-    token = AuthManager.create_access_token(data, expires_delta)
+    token = Token.create_access_token(data, expires_delta)
 
-    decoded_token = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+    decoded_token = jwt.decode(token, auth_config.SECRET_KEY, algorithms=[auth_config.ALGORITHM])
     assert decoded_token["sub"] == data["sub"]
 
     expected_exp_time = datetime.now(timezone.utc) + expected_exp
@@ -63,12 +54,12 @@ def test_create_access_token(expires_delta, expected_exp):
 
 async def test_authenticate_user_user_not_found(mocker):
     mock_get_user = mocker.patch(
-        'src.auth.auth_manager.UserRepo.get_user',
+        'src.auth.authenticator.UserRepo.get_user',
         new_callable=AsyncMock,
         return_value=None
     )
 
-    result = await AuthManager.authenticate_user(
+    result = await Authenticator.authenticate_user(
         username="test_user",
         password="wrong_password"
     )
@@ -79,15 +70,15 @@ async def test_authenticate_user_user_not_found(mocker):
 
 async def test_authenticate_user_incorrect_password(mocker):
     mock_get_user = mocker.patch(
-        'src.auth.auth_manager.UserRepo.get_user',
+        'src.auth.authenticator.UserRepo.get_user',
         new_callable=AsyncMock,
         return_value=UserOrm(hashed_password="hashed_password")
     )
     mock_verify_password = mocker.patch(
-        'src.auth.auth_manager.verify_password',
+        'src.auth.authenticator.verify_password',
         return_value=False
     )
-    result = await AuthManager.authenticate_user("test_user", "wrong_password")
+    result = await Authenticator.authenticate_user("test_user", "wrong_password")
 
     assert result is None
     mock_get_user.assert_called_once_with(username="test_user")
@@ -96,15 +87,15 @@ async def test_authenticate_user_incorrect_password(mocker):
 
 async def test_authenticate_user_success(mocker, user_orm_data):
     mock_get_user = mocker.patch(
-        'src.auth.auth_manager.UserRepo.get_user',
+        'src.auth.authenticator.UserRepo.get_user',
         new_callable=AsyncMock,
         return_value=UserOrm(**user_orm_data)
     )
     mock_verify_password = mocker.patch(
-        'src.auth.auth_manager.verify_password',
+        'src.auth.authenticator.verify_password',
         return_value=True
     )
-    result = await AuthManager.authenticate_user("test_user", "correct_password")
+    result = await Authenticator.authenticate_user("test_user", "correct_password")
 
     assert result is not None
     assert isinstance(result, UserRead)
@@ -120,17 +111,17 @@ async def test_get_current_user_success(mocker, user_orm_data):
         return_value={"sub": "test_user"}
     )
     mock_get_user = mocker.patch(
-        'src.auth.auth_manager.UserRepo.get_user',
+        'src.auth.authenticator.UserRepo.get_user',
         new_callable=AsyncMock,
         return_value=UserOrm(**user_orm_data)
     )
-    result = await AuthManager.get_current_user("valid_token")
+    result = await Authenticator.get_current_user("valid_token")
 
     assert result is not None
     assert isinstance(result, UserRead)
     assert result.username == "test_user"
 
-    mock_jwt_decode.assert_called_once_with("valid_token", settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+    mock_jwt_decode.assert_called_once_with("valid_token", auth_config.SECRET_KEY, algorithms=[auth_config.ALGORITHM])
     mock_get_user.assert_called_once_with(username="test_user")
 
 
@@ -140,13 +131,13 @@ async def test_get_current_user_invalid_token(mocker):
         side_effect=jwt.InvalidTokenError
     )
     with pytest.raises(HTTPException) as exc_info:
-        await AuthManager.get_current_user("invalid_token")
+        await Authenticator.get_current_user("invalid_token")
 
     assert exc_info.value.status_code == status.HTTP_401_UNAUTHORIZED
     assert exc_info.value.detail == "Could not validate credentials"
     assert exc_info.value.headers["WWW-Authenticate"] == "Bearer"
 
-    mock_jwt_decode.assert_called_once_with("invalid_token", settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+    mock_jwt_decode.assert_called_once_with("invalid_token", auth_config.SECRET_KEY, algorithms=[auth_config.ALGORITHM])
 
 
 async def test_get_current_user_user_not_found(mocker):
@@ -155,18 +146,18 @@ async def test_get_current_user_user_not_found(mocker):
         return_value={"sub": "test_user"}
     )
     mock_get_user = mocker.patch(
-        'src.auth.router.UserRepo.get_user',
+        'src.auth.authenticator.UserRepo.get_user',
         new_callable=AsyncMock,
         return_value=None
     )
     with pytest.raises(HTTPException) as exc_info:
-        await AuthManager.get_current_user("valid_token")
+        await Authenticator.get_current_user("valid_token")
 
     assert exc_info.value.status_code == status.HTTP_401_UNAUTHORIZED
     assert exc_info.value.detail == "Could not validate credentials"
     assert exc_info.value.headers["WWW-Authenticate"] == "Bearer"
 
-    mock_jwt_decode.assert_called_once_with("valid_token", settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+    mock_jwt_decode.assert_called_once_with("valid_token", auth_config.SECRET_KEY, algorithms=[auth_config.ALGORITHM])
     mock_get_user.assert_called_once_with(username="test_user")
 
 

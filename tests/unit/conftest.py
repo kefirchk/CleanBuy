@@ -1,6 +1,4 @@
-import asyncio
 import json
-import os
 from pathlib import Path
 from typing import AsyncGenerator
 
@@ -9,25 +7,34 @@ from httpx import AsyncClient, ASGITransport
 
 import pytest
 
-from dotenv import load_dotenv
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy.pool import NullPool
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
 from src.main import app
-from src.models.base import Base
+from src.database import Base
 
-load_dotenv()
 
-DB_HOST_TEST = os.environ.get("DB_HOST_TEST")
-DB_PORT_TEST = os.environ.get("DB_PORT_TEST")
-DB_NAME_TEST = os.environ.get("DB_NAME_TEST")
-DB_USER_TEST = os.environ.get("DB_USER_TEST")
-DB_PASS_TEST = os.environ.get("DB_PASS_TEST")
+class TestConfig(BaseSettings):
+    DB_DRIVER: str = "postgresql+asyncpg"
+    DB_HOST_TEST: str
+    DB_PORT_TEST: str
+    DB_NAME_TEST: str
+    DB_USER_TEST: str
+    DB_PASS_TEST: str
+
+    @property
+    def DATABASE_URL_TEST(self):
+        return f'{self.DB_DRIVER}://{self.DB_USER_TEST}:{self.DB_PASS_TEST}@{self.DB_HOST_TEST}:{self.DB_PORT_TEST}/{self.DB_NAME_TEST}'
+
+    model_config = SettingsConfigDict(env_file='_envs/test.env')
+
+
+test_config = TestConfig()
+
 
 # DATABASE
-DATABASE_URL_TEST = f'postgresql+asyncpg://{DB_USER_TEST}:{DB_PASS_TEST}@{DB_HOST_TEST}:{DB_PORT_TEST}/{DB_NAME_TEST}'
-
-engine_test = create_async_engine(url=DATABASE_URL_TEST, echo=False, poolclass=NullPool)
+engine_test = create_async_engine(url=test_config.DATABASE_URL_TEST, echo=False, poolclass=NullPool)
 new_session_test = async_sessionmaker(engine_test, expire_on_commit=False)
 
 

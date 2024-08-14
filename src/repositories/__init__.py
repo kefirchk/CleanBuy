@@ -1,2 +1,0 @@
-from src.repositories.buyer_information_repo import BuyerInformationRepo
-from src.repositories.user_repo import UserRepo

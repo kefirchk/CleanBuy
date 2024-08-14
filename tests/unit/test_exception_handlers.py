@@ -3,7 +3,7 @@ from httpx import AsyncClient
 
 
 async def test_response_validation_exception_handler(ac: AsyncClient):
-    response = await ac.post("/auth/register", json={
+    response = await ac.post("/users/register", json={
         "username": "fucker",
         "password": "1234",
         "role": "blablabla",
@@ -37,4 +37,4 @@ async def test_global_exception_handler(ac: AsyncClient):
 async def test_not_found_exception_handler(ac: AsyncClient):
     response = await ac.get("/users/-1")
     assert response.status_code == 404
-    assert response.json() == {"detail": "Buyer not found"}
+    assert response.json() == {"detail": "User not found"}

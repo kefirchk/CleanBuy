@@ -13,7 +13,6 @@ __pycache__
 
 # Ignore environments
 venv
-.env
 
 # Ignore testing
 cov_html

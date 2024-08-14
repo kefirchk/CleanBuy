@@ -1,0 +1,4 @@
+from src.users_crud.schemas.custom_types.product_segment_type import ProductSegmentType
+from src.users_crud.schemas.custom_types.role_type import RoleType
+from src.users_crud.schemas.custom_types.delivery_option_type import DeliveryOptionType
+from src.users_crud.schemas.custom_types.payment_option_type import PaymentOptionType

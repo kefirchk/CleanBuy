@@ -3,7 +3,9 @@
 {% block head %}
 <style>
     .hero {
-        {#background-image: url('{{ url_for("static", path="background.jpg") }}');#}
+        background-image: url('{{ url_for("static", path="images/background.jpg") }}');
+        background-color: rgba(255, 255, 255, 0.55); /* Белый цвет с 50% прозрачностью */
+        background-blend-mode: overlay; /* Режим наложения */
         background-size: cover;
         background-position: center;
         color: black;

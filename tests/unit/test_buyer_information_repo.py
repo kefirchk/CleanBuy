@@ -1,6 +1,6 @@
-from src.models import BuyerInformationOrm
-from src.repositories import BuyerInformationRepo
-from src.schemas import BuyerInformation, Location, PriceRange, CommissionRate
+from src.users_crud.models import BuyerInformationOrm
+from src.users_crud.repositories import BuyerInformationRepo
+from src.users_crud.schemas import BuyerInformation, Location, PriceRange, CommissionRate
 
 
 async def test_update_buyer_information(mocker):

@@ -1,46 +1,35 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-
 from contextlib import asynccontextmanager
 
-from starlette.staticfiles import StaticFiles
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
-from src.database import create_tables, delete_tables
-from src.auth import auth_router
-from src.users_operations import users_router
-from src.pages.router import router as page_router
-from src.config import origins
-
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    # await delete_tables()
-    # print("Database is cleaned!")
-    await create_tables()
-    print("Database is ready!")
-    yield
-    print("App is off.")
+from src.database import create_tables
+from src.routers import routers
+from src.urls import origins, allow_methods, allow_headers
 
 
-app = FastAPI(title="CleanBuy", lifespan=lifespan)
-app.include_router(auth_router)
-app.include_router(users_router)
-app.include_router(page_router)
-
+app = FastAPI(title="CleanBuy")
 app.mount("/static", StaticFiles(directory="src/static"), name="static")
+
+
+for router in routers:
+    app.include_router(router)
+
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE"],
-    allow_headers=["Content-Type", "Set-Cookie", "Access-Control-Allow-Headers", "Access-Control-Allow-Origin",
-                   "Authorization"],
+    allow_methods=allow_methods,
+    allow_headers=allow_headers,
 )
 
 
-@app.get("/", tags=["Root"])
-async def root():
-    return {
-        "message": f"Welcome inside CleanBuy API!"
-    }
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    print("Application is started")
+    # await create_tables()
+    # print("Database is ready")
+    yield
+    print("Application is closed")
