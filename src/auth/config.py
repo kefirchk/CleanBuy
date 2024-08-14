@@ -8,7 +8,7 @@ class AuthConfig(BaseSettings):
     ALGORITHM: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int
 
-    model_config = SettingsConfigDict(env_file='_envs/auth.env')
+    model_config = SettingsConfigDict(env_file='_envs/.env.auth')
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

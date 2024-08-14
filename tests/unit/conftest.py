@@ -27,7 +27,7 @@ class TestConfig(BaseSettings):
     def DATABASE_URL_TEST(self):
         return f'{self.DB_DRIVER}://{self.DB_USER_TEST}:{self.DB_PASS_TEST}@{self.DB_HOST_TEST}:{self.DB_PORT_TEST}/{self.DB_NAME_TEST}'
 
-    model_config = SettingsConfigDict(env_file='_envs/test.env')
+    model_config = SettingsConfigDict(env_file='_envs/.env.test')
 
 
 test_config = TestConfig()

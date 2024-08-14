@@ -129,7 +129,7 @@ ___
 ###### Image creating
 
     docker build . --tag cleanbuy
-    docker run -p 80:80 cleanbuy
+    docker run -p 443:443 cleanbuy
 
 ###### Docker-compose
     

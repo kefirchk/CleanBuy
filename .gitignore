@@ -1,4 +1,12 @@
 venv
 .idea
 __pycache__
+
+# Must be uncommented:
+# certs
+# _envs
+# cov_html
+
+# PyTest:
+.coverage
 .pytest_cache

@@ -19,3 +19,4 @@ cov_html
 .pytest_cache
 tests
 pyproject.toml
+.coverage

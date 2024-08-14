@@ -9,6 +9,9 @@ services:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASS}
+    env_file:
+      - _envs/.env.db
+      - _envs/.env.auth
     ports:
       - "${DB_PORT}:5432"
     volumes:
@@ -20,8 +23,11 @@ services:
       - db
     environment:
       DB_HOST: db
+    env_file:
+      - _envs/.env.db
+      - _envs/.env.auth
     ports:
-      - "8000:8000"
+      - "443:443"
     volumes:
       - .:/app
 
