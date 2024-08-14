@@ -47,6 +47,58 @@ ___
     alembic revision --autogenerate -m "Initiial"
     alembic upgrade head
 ---
+### Switch on HTTPS
+___
+
+***Step 1. Installing Chocolatey***
+- Open cmd.exe as Administrator
+- Run the following command:
+
+      @"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "[System.Net.ServicePointManager]::SecurityProtocol = 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
+
+- Check if Chocolatey is installed by the following command:
+
+      choco
+    
+  You must see:
+
+      Chocolatey v2.3.0
+      Please run 'choco -?' or 'choco <command> -?' for help menu.
+
+***Step 2. Installing mkcert***
+- Run the following command:
+
+      choco install mkcert
+
+***Step 3. Run mkcert***
+- Run the following command:
+
+      mkcert -intall
+
+      Created a new local CA 💥
+      The local CA is now installed in the system trust store! ⚡️
+      The local CA is now installed in Java's trust store! ☕️
+
+- And run the last command:
+
+      mkcert localhost 127.0.0.1
+
+      Created a new certificate valid for the following names 📜
+       - "localhost"
+       - "127.0.0.1"
+
+      The certificate is at "./localhost+1.pem" and the key at "./localhost+1-key.pem" ✅
+
+      It will expire on 14 November 2026 🗓
+
+- At the result we have two files: _localhost+1.pem_ and _localhost+1-key.pem_. \
+I will rename these files on _cert.pem_ and _key.pem_ accordingly and move them to *_security* folder.
+
+- Now we can use *HTTPS* running our app:
+
+      uvicorn src.main:app --loop asyncio --host 0.0.0.0 --port 443 --ssl-keyfile=certs/key.pem --ssl-certfile=certs/cert.pem
+
+---
 ### Testing
 ___
 ***PyTest*** is used for testing.

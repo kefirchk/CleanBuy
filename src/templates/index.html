@@ -1,98 +1,44 @@
 {% extends "base.html" %}
 
 {% block head %}
-<style>
-    .hero {
-        background-image: url('{{ url_for("static", path="images/background.jpg") }}');
-        background-color: rgba(255, 255, 255, 0.55); /* Белый цвет с 50% прозрачностью */
-        background-blend-mode: overlay; /* Режим наложения */
-        background-size: cover;
-        background-position: center;
-        color: black;
-        padding: 100px 20px;
-        text-align: center;
-    }
-
-    .hero h1 {
-        font-size: 3rem;
-        font-weight: bold;
-        margin-bottom: 20px;
-    }
-
-    .hero p {
-        font-size: 1.5rem;
-        margin-bottom: 40px;
-    }
-
-    .hero button {
-        background-color: #1e90ff;
-        color: white;
-        padding: 10px 20px;
-        font-size: 1rem;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-
-    .hero button:hover {
-        background-color: #1c86ee;
-    }
-
-    .info-section {
-        padding: 50px 20px;
-        text-align: center;
-    }
-
-    .info-section h2 {
-        font-size: 2rem;
-        margin-bottom: 20px;
-    }
-
-    .info-section p {
-        font-size: 1.25rem;
-        margin-bottom: 30px;
-    }
-
-    .info-section .features {
-        display: flex;
-        justify-content: space-around;
-        flex-wrap: wrap;
-    }
-
-    .info-section .feature {
-        width: 30%;
-        margin-bottom: 20px;
-    }
-
-    .info-section .feature h3 {
-        font-size: 1.5rem;
-        margin-bottom: 10px;
-    }
-
-    .info-section .feature p {
-        font-size: 1rem;
-        color: #555;
-    }
-
-    .footer {
-        background-color: #333;
-        color: white;
-        padding: 20px;
-        text-align: center;
-    }
-
-    .footer p {
-        margin: 0;
-    }
-</style>
+<link rel="stylesheet" href="{{ url_for('static', path='css/index.css') }}">
 {% endblock %}
 
 {% block content %}
 <div class="hero">
     <h1>Welcome to CleanBuy!</h1>
     <p>Find users, connect with them, and chat instantly.</p>
-    <button onclick="window.location.href='/pages/search/'">Start Searching</button>
+    <div class="button-container">
+        <button id="loginBtn">Log In</button>
+        <button id="registerBtn">Register</button>
+    </div>
+</div>
+
+<!-- Модальное окно для входа -->
+<div id="loginModal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="closeLogin">&times;</span>
+        <h2>Log In</h2>
+        <form id="loginForm">
+            <input type="text" placeholder="Username" required>
+            <input type="password" placeholder="Password" required>
+            <button type="submit">Log In</button>
+        </form>
+    </div>
+</div>
+
+<!-- Модальное окно для регистрации -->
+<div id="registerModal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="closeRegister">&times;</span>
+        <h2>Register</h2>
+        <form id="registerForm">
+            <input type="text" placeholder="Username" required>
+            <input type="email" placeholder="Email" required>
+            <input type="password" placeholder="Password" required>
+            <button type="submit">Register</button>
+        </form>
+    </div>
 </div>
 
 <div class="info-section">
@@ -117,4 +63,8 @@
 <div class="footer">
     <p>&copy; 2024 Alexey Klimovich. All rights reserved.</p>
 </div>
+
+<!-- Подключаем скрипты -->
+<script src="{{ url_for('static', path='js/home/modal.js') }}"></script>
+<script src="{{ url_for('static', path='js/home/formHandlers.js') }}"></script>
 {% endblock %}

@@ -8,13 +8,13 @@ from src.chat import MessageOrm, conn_manager
 
 
 router = APIRouter(
-    prefix="/chat",
+    prefix="/chat_api",
     tags=["Chat"]
 )
 
 
 @router.get("/last_messages")
-async def get_last_messages(message_limit: int = 10):
+async def get_last_messages(message_limit: int = 10) -> List:
     async with new_session() as session:
         query = select(MessageOrm).order_by(MessageOrm.id.desc()).limit(message_limit)
         result = await session.execute(query)

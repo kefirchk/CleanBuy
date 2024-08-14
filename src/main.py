@@ -9,7 +9,16 @@ from src.routers import routers
 from src.urls import origins, allow_methods, allow_headers
 
 
-app = FastAPI(title="CleanBuy")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    print("Application is started")
+    # await create_tables()
+    # print("Database is ready")
+    yield
+    print("Application is closed")
+
+
+app = FastAPI(title="CleanBuy", lifespan=lifespan)
 app.mount("/static", StaticFiles(directory="src/static"), name="static")
 
 
@@ -25,11 +34,15 @@ app.add_middleware(
     allow_headers=allow_headers,
 )
 
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    print("Application is started")
-    # await create_tables()
-    # print("Database is ready")
-    yield
-    print("Application is closed")
+# It doesn't work:
+# if __name__ == "__main__":
+#     uvicorn.run(
+#         app="main:app",
+#         host="localhost",
+#         port=443,
+#         ssl_certfile='../certs/cert.pem',
+#         ssl_keyfile='../certs/key.pem'
+#     )
+# Use
+# uvicorn src.main:app --loop asyncio --host localhost --port 443 --ssl-keyfile=certs/key.pem --ssl-certfile=certs/cert.pem
+# instead
