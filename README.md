@@ -92,7 +92,7 @@ ___
       It will expire on 14 November 2026 🗓
 
 - At the result we have two files: _localhost+1.pem_ and _localhost+1-key.pem_. \
-I will rename these files on _cert.pem_ and _key.pem_ accordingly and move them to *_security* folder.
+I will rename these files on _cert.pem_ and _key.pem_ accordingly and move them to *certs* folder.
 
 - Now we can use *HTTPS* running our app:
 

@@ -1,8 +1,8 @@
 origins = [
     "http://localhost.tiangolo.com",
     "https://localhost.tiangolo.com",
-    "http://localhost",
-    "http://localhost:8080",
+    "https://localhost",
+    "https://localhost:443",
 ]
 allow_methods = ["GET", "POST", "OPTIONS", "DELETE", "PATCH", "PUT"]
 allow_headers = [
