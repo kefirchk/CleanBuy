@@ -7,6 +7,7 @@ from fastapi.staticfiles import StaticFiles
 from src.database import create_tables
 from src.routers import routers
 from src.urls import origins, allow_methods, allow_headers
+from src.exception_handlers import exception_handlers
 
 
 @asynccontextmanager
@@ -26,6 +27,10 @@ for router in routers:
     app.include_router(router)
 
 
+for exc_type, handler in exception_handlers.items():
+    app.add_exception_handler(exc_type, handler)
+
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -33,6 +38,7 @@ app.add_middleware(
     allow_methods=allow_methods,
     allow_headers=allow_headers,
 )
+
 
 # It doesn't work:
 # if __name__ == "__main__":
@@ -43,6 +49,6 @@ app.add_middleware(
 #         ssl_certfile='../certs/cert.pem',
 #         ssl_keyfile='../certs/key.pem'
 #     )
-# Use
+#
+# Use instead:
 # uvicorn src.main:app --loop asyncio --host localhost --port 443 --ssl-keyfile=certs/key.pem --ssl-certfile=certs/cert.pem
-# instead

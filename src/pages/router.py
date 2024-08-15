@@ -4,7 +4,7 @@ from fastapi import APIRouter, Request, Depends
 from fastapi.templating import Jinja2Templates
 
 from src.users_crud.schemas import UserRead
-from src.users_crud.router import get_users
+from src.users_crud.router import get_users, get_me
 
 
 router = APIRouter(
@@ -21,11 +21,13 @@ def get_home_page(request: Request):
 
 
 @router.get("/chat")
-def get_chat_page(request: Request, all_users: Annotated[List[UserRead], Depends(get_users)], username: str = ""):
-    users = []
-    for u in all_users:
-        if u.username.startswith(username):
-            users.append(u)
+async def get_chat_page(
+        request: Request,
+        current_user: Annotated[UserRead, Depends(get_me)],
+        all_users: Annotated[List[UserRead], Depends(get_users)],
+        username: str = ""
+):
+    users = [u for u in all_users if u.username.startswith(username)]
     return templates.TemplateResponse(
         "chat.html", {
             "request": request,
