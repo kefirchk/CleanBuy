@@ -17,10 +17,10 @@ templates = Jinja2Templates(directory="src/templates")
 
 @router.get("/home")
 def get_home_page(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse("home.html", {"request": request})
 
 
-@router.get("/chat/")
+@router.get("/chat")
 def get_chat_page(request: Request, all_users: Annotated[List[UserRead], Depends(get_users)], username: str = ""):
     users = []
     for u in all_users:

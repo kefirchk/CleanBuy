@@ -1,0 +1,74 @@
+/* Основные стили для модального окна входа */
+.login-modal {
+    display: none; /* Скрыто по умолчанию */
+    position: fixed; /* Фиксированное положение */
+    z-index: 1; /* Поверх других элементов */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* Вертикальная прокрутка */
+    background-color: rgba(0, 0, 0, 0.4); /* Полупрозрачный черный фон */
+}
+
+.login-modal-content {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 400px; /* Уменьшена максимальная ширина */
+    max-height: 40vh; /* Уменьшена максимальная высота */
+    overflow-y: auto; /* Прокрутка содержимого */
+    text-align: left;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+.login-close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.login-close:hover,
+.login-close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.login-modal h2 {
+    margin-top: 0;
+    text-align: center;
+    font-size: 1.5rem; /* Уменьшен размер шрифта */
+    font-weight: bold; /* Жирный шрифт */
+    color: #1e90ff; /* Цвет текста */
+    border-bottom: 1px solid #ddd; /* Нижняя граница */
+    padding-bottom: 8px; /* Отступ снизу */
+}
+
+.login-modal input {
+    width: 100%;
+    padding: 8px;
+    margin: 10px 0; /* Увеличен отступ сверху и снизу для более компактного вида */
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.login-modal button {
+    background-color: #1e90ff;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px; /* Уменьшен отступ сверху */
+}
+
+.login-modal button:hover {
+    background-color: #1c86ee;
+}

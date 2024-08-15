@@ -1,0 +1,92 @@
+<!-- Модальное окно для регистрации -->
+<div id="registerModal" class="register-modal">
+    <div class="register-modal-content">
+        <span class="register-close" id="closeRegister">&times;</span>
+        <h2>Register</h2>
+        <form id="registerForm">
+            <input id="registerUsername" type="text" placeholder="Username" required>
+            <input id="registerEmail" type="email" placeholder="Email" required>
+            <input id="registerPassword" type="password" placeholder="Password" required>
+
+            <select id="role" name="role" required>
+                <option value="USER">User</option>
+                <option value="BUYER">Buyer</option>
+            </select>
+
+            <div id="buyerInfo" class="buyer-info" style="display: none;">
+                <h3>Buyer Information</h3>
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="country">Country:</label>
+                        <input id="country" type="text" placeholder="Country">
+                    </div>
+                    <div class="input-group">
+                        <label for="city">City:</label>
+                        <input id="city" type="text" placeholder="City">
+                    </div>
+                </div>
+
+                <label for="importCountries">Import Countries:</label>
+                <div id="countryList">
+                    <div class="form-group">
+                        <input type="text" class="country-input" placeholder="Country">
+                        <button type="button" id="addCountry" class="country-button">+</button>
+                    </div>
+                </div>
+
+                <label for="productSegment">Product Segment:</label>
+                <select id="productSegment" required>
+                    <option value="LUXURY">Luxury</option>
+                    <option value="PREMIUM">Premium</option>
+                    <option value="NICHE">Niche</option>
+                    <option value="MASS MARKET">Mass market</option>
+                    <option value="BUDGET">Budget</option>
+                    <option value="SEASONAL">Seasonal</option>
+                    <option value="ALL">All</option>
+                </select>
+
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="minRate">Min Commission Rate:</label>
+                        <input id="minRate" type="number" min="0" max="100" placeholder="0">
+                    </div>
+                    <div class="input-group">
+                        <label for="maxRate">Max Commission Rate:</label>
+                        <input id="maxRate" type="number" min="0" max="100" placeholder="100">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="minPrice">Min Price Range:</label>
+                        <input id="minPrice" type="number" min="0" placeholder="0">
+                    </div>
+                    <div class="input-group">
+                        <label for="maxPrice">Max Price Range:</label>
+                        <input id="maxPrice" type="number" min="0" placeholder="Infinity">
+                    </div>
+                </div>
+
+                <label for="deliveryOptions">Delivery Options:</label>
+                <select id="deliveryOptions" required>
+                    <option value="INCLUDED">Included</option>
+                    <option value="NOT_INCLUDED">Not included</option>
+                    <option value="NEGOTIABLE">Negotiable</option>
+                </select>
+
+                <label>Payment Options:</label>
+                <div class="payment-options">
+                    <label><input type="checkbox" name="paymentOptions" value="CARD_PAYMENT"> Card Payment</label>
+                    <label><input type="checkbox" name="paymentOptions" value="ON_DELIVERY"> On Delivery</label>
+                    <label><input type="checkbox" name="paymentOptions" value="CRYPTOCURRENCY"> Cryptocurrency</label>
+                    <label><input type="checkbox" name="paymentOptions" value="PREPAYMENT_100"> Prepayment 100%</label>
+                </div>
+
+                <label for="prepaymentPercentage">Prepayment Percentage:</label>
+                <input id="prepaymentPercentage" type="number" min="0" max="100" placeholder="100">
+            </div>
+
+            <button type="submit" class="register-button">Register</button>
+        </form>
+    </div>
+</div>

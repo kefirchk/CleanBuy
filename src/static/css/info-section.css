@@ -1,0 +1,35 @@
+.info-section {
+    padding: 50px 20px;
+    text-align: center;
+}
+
+.info-section h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.info-section p {
+    font-size: 1.25rem;
+    margin-bottom: 30px;
+}
+
+.info-section .features {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.info-section .feature {
+    width: 30%;
+    margin-bottom: 20px;
+}
+
+.info-section .feature h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.info-section .feature p {
+    font-size: 1rem;
+    color: #555;
+}
