@@ -1,6 +1,7 @@
-from sqlalchemy import Integer, String, TIMESTAMP, ForeignKey, func
+from sqlalchemy import Integer, String, TIMESTAMP, ForeignKey, func, Enum as SQLAlchemyEnum
 from sqlalchemy.orm import Mapped, mapped_column
 
+from src.chat import ChatType
 from src.database import Base
 
 
@@ -20,7 +21,11 @@ class MessageOrm(Base):
         server_default=func.now(),
         nullable=False
     )
-    user_id: Mapped[int] = mapped_column(
+    sender_id: Mapped[int] = mapped_column(
+        Integer,
+        nullable=False
+    )
+    chat_id: Mapped[int] = mapped_column(
         Integer,
         nullable=False
     )
@@ -36,9 +41,13 @@ class ChatOrm(Base):
         Integer,
         primary_key=True
     )
+    chat_type: Mapped[ChatType] = mapped_column(
+        SQLAlchemyEnum(ChatType),
+        nullable=False
+    )
 
 
-class Chat_UserOrm(Base):
+class ChatParticipantsOrm(Base):
     __tablename__ = "chats_users"
 
     chat_id: Mapped[int] = mapped_column(

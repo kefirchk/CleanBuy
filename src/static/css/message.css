@@ -1,0 +1,51 @@
+.message-item {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #f9f9f9; /* Общий фон */
+    border: 2px solid #f9f9f9; /* Цвет рамки будет изменяться */
+}
+
+.message-header {
+    font-size: 0.9em;
+    color: #555;
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.message-body {
+    font-size: 1em;
+    color: #333;
+}
+
+.timestamp {
+    font-size: 0.8em;
+    color: #888;
+    margin-left: 10px;
+}
+
+/* Специфические стили для отправленных сообщений */
+.message-item.sent {
+    border-color: #d4edda; /* Зеленая рамка */
+    background-color: #d4edda;
+    text-align: right;
+    margin-left: auto;
+}
+
+/* Специфические стили для полученных сообщений */
+.message-item.received {
+    border-color: #cecece; /* Белая рамка */
+    background-color: #cecece; /* Фон остается */
+    text-align: left;
+    margin-right: auto;
+}
+
+/* Центрирование текста в заголовке сообщения */
+.sent .message-header {
+    justify-content: flex-end;
+}
+
+.received .message-header {
+    justify-content: flex-start;
+}

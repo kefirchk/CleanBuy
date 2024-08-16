@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 
 {% block head %}
-<link rel="stylesheet" href="{{ url_for('static', path='css/chat.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/chat.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/message.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -16,41 +17,43 @@
         </div>
         <span class="text-gray-600">E.g. Bob, Alice, etc.</span>
         {% for user in users %}
-            <div class="flex flex-col md:flex-row rounded-lg border-2 border-gray-300 p-5 mt-5 bg-white shadow-md">
-                <img src="{{ url_for('static', path='images/user.png') }}" alt="User image" class="mr-5 rounded-lg w-24 h-24 object-cover">
-                <div class="flex flex-col justify-between">
-                    <div>
-                        <span class="text-2xl font-bold">{{ user.username }}</span>
-                        <span class="text-lg text-gray-500">{{ user.email }}</span>
+            {% if user.id != current_user.id %}
+                <div class="flex flex-col md:flex-row rounded-lg border-2 border-gray-300 p-5 mt-5 bg-white shadow-md">
+                    <img src="{{ url_for('static', path='images/user.png') }}" alt="User image" class="mr-5 rounded-lg w-24 h-24 object-cover">
+                    <div class="flex flex-col justify-between">
+                        <div>
+                            <span class="text-2xl font-bold">{{ user.username }}</span>
+                            <span class="text-lg text-gray-500">{{ user.email }}</span>
+                        </div>
+                        <span class="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-lg shadow mt-2">
+                            {{ user.role }}
+                        </span>
+                        <div class="text-gray-700 mt-3 flex flex-col gap-2">
+                            {% if user.buyer_information %}
+                                <span><strong>Location:</strong> {{ user.buyer_information.location.city }}, {{ user.buyer_information.location.country }}</span>
+                                <span><strong>Import countries:</strong>
+                                    {% for country in user.buyer_information.import_countries %}
+                                        {{ country }}{% if not loop.last %}, {% endif %}
+                                    {% endfor %}
+                                </span>
+                                <span><strong>Product segment:</strong> {{ user.buyer_information.product_segment.value }}</span>
+                                <span><strong>Commission rate:</strong> from {{ user.buyer_information.commission_rate.min_rate }}% to {{ user.buyer_information.commission_rate.max_rate }}%</span>
+                                <span><strong>Price range:</strong> from ${{ user.buyer_information.price_range.min_price }} to ${{ user.buyer_information.price_range.max_price }}</span>
+                                <span><strong>Delivery:</strong> {{ user.buyer_information.delivery_options.value }}</span>
+                                <span><strong>Payment:</strong>
+                                    {% for p_option in user.buyer_information.payment_options %}
+                                        {{ p_option.value }}{% if not loop.last %}, {% endif %}
+                                    {% endfor %}
+                                </span>
+                                <span><strong>Prepayment percentage:</strong> {{ user.buyer_information.prepayment_percentage }}%</span>
+                            {% endif %}
+                        </div>
+                        <button data-current_user_id="{{ current_user.id }}" data-other_user_id="{{ user.id }}" data-username="{{ user.username }}" class="write-message-btn mt-3 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition">
+                            Write message...
+                        </button>
                     </div>
-                    <span class="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-lg shadow mt-2">
-                        {{ user.role }}
-                    </span>
-                    <div class="text-gray-700 mt-3 flex flex-col gap-2">
-                        {% if user.buyer_information %}
-                            <span><strong>Location:</strong> {{ user.buyer_information.location.city }}, {{ user.buyer_information.location.country }}</span>
-                            <span><strong>Import countries:</strong>
-                                {% for country in user.buyer_information.import_countries %}
-                                    {{ country }}{% if not loop.last %}, {% endif %}
-                                {% endfor %}
-                            </span>
-                            <span><strong>Product segment:</strong> {{ user.buyer_information.product_segment.value }}</span>
-                            <span><strong>Commission rate:</strong> from {{ user.buyer_information.commission_rate.min_rate }}% to {{ user.buyer_information.commission_rate.max_rate }}%</span>
-                            <span><strong>Price range:</strong> from ${{ user.buyer_information.price_range.min_price }} to ${{ user.buyer_information.price_range.max_price }}</span>
-                            <span><strong>Delivery:</strong> {{ user.buyer_information.delivery_options.value }}</span>
-                            <span><strong>Payment:</strong>
-                                {% for p_option in user.buyer_information.payment_options %}
-                                    {{ p_option.value }}{% if not loop.last %}, {% endif %}
-                                {% endfor %}
-                            </span>
-                            <span><strong>Prepayment percentage:</strong> {{ user.buyer_information.prepayment_percentage }}%</span>
-                        {% endif %}
-                    </div>
-                    <button data-username="{{ user.username }}" class="write-message-btn mt-3 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition">
-                        Write message...
-                    </button>
                 </div>
-            </div>
+            {% endif%}
         {% endfor %}
     </div>
 
