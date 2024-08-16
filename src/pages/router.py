@@ -23,9 +23,9 @@ def get_home_page(request: Request):
 @router.get("/chat")
 async def get_chat_page(
         request: Request,
-        current_user: Annotated[UserRead, Depends(get_me)],
         all_users: Annotated[List[UserRead], Depends(get_users)],
-        username: str = ""
+        current_user: Annotated[UserRead, Depends(get_me)],
+        username: str = "",
 ):
     users = [u for u in all_users if u.username.startswith(username)]
     return templates.TemplateResponse(

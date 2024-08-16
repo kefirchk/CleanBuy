@@ -1,9 +1,10 @@
-from typing import Annotated
+from typing import Annotated, Optional
 
 import jwt
 from jwt.exceptions import InvalidTokenError
 
 from fastapi import Depends, HTTPException, status
+from starlette.requests import Request
 
 from src.auth import oauth2_scheme, auth_config
 from src.auth import verify_password
@@ -22,7 +23,19 @@ class Authenticator:
         return UserRead.from_orm(user)
 
     @staticmethod
-    async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
+    def get_token_from_cookies(request: Request) -> Optional[str]:
+        token = request.cookies.get("Authorization")
+        if not token:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Token not found in cookies",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        return token
+
+    @staticmethod
+    async def get_current_user(token: Annotated[str, Depends(get_token_from_cookies)]):  # oauth2_scheme)]):
+        print("Token  in  get_me:", token)
         credentials_exception = HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials",
