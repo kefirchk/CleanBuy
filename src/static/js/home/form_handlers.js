@@ -30,21 +30,22 @@ document.getElementById('loginForm').onsubmit = async function(e) {
     await sendDataForLogin(formData)
 }
 
+
 document.getElementById('registerForm').onsubmit = async function(e) {
     e.preventDefault();
 
     const username = document.getElementById('registerUsername').value;
     const email = document.getElementById('registerEmail').value;
     const password = document.getElementById('registerPassword').value;
-    const role = document.getElementById('role').value
-    let buyer_information = null //document.getElementById('buyerInfo').value
+    const role = document.getElementById('role').value;
+    let buyer_information = null;
     if (role === 'BUYER') {
         const paymentOptions = Array.from(document.querySelectorAll('input[name="paymentOptions"]:checked'))
             .map(checkbox => checkbox.value);
 
         const importCountries = Array.from(document.querySelectorAll('.country-input'))
             .map(input => input.value.trim())
-            .filter(value => value.length > 0); // Фильтруем пустые строки
+            .filter(value => value.length > 0);
 
         buyer_information = {
             location: {

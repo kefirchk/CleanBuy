@@ -1,0 +1,22 @@
+{% extends "base/base.html" %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', path='css/base/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/home/hero.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/home/register-modal.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/home/login-modal.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/home/info-section.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/base/footer.css') }}">
+{% endblock %}
+
+{% block content %}
+    {% include 'home/hero.html' %}
+    {% include 'home/login-modal.html' %}
+    {% include 'home/register-modal.html' %}
+    {% include 'home/info-section.html' %}
+    {% include 'base/footer.html' %}
+
+    <!-- Подключаем скрипты -->
+    <script src="{{ url_for('static', path='js/home/modal.js') }}"></script>
+    <script src="{{ url_for('static', path='js/home/form_handlers.js') }}"></script>
+{% endblock %}

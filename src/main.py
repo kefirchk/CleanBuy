@@ -13,7 +13,7 @@ from src.exception_handlers import exception_handlers
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print("Application is started")
-    # await create_tables()
+    # await create_tables()           # If you don't use Alembic, then you can use this
     # print("Database is ready")
     yield
     print("Application is closed")
@@ -50,5 +50,5 @@ app.add_middleware(
 #         ssl_keyfile='../certs/key.pem'
 #     )
 #
-# Use instead:
+# Use instead in console:
 # uvicorn src.main:app --loop asyncio --host localhost --port 443 --ssl-keyfile=certs/key.pem --ssl-certfile=certs/cert.pem

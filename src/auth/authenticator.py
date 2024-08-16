@@ -6,7 +6,7 @@ from jwt.exceptions import InvalidTokenError
 from fastapi import Depends, HTTPException, status
 from starlette.requests import Request
 
-from src.auth import oauth2_scheme, auth_config
+from src.auth import auth_config
 from src.auth import verify_password
 from src.users_crud.schemas import UserRead
 from src.users_crud.repositories import UserRepo
@@ -34,7 +34,7 @@ class Authenticator:
         return token
 
     @staticmethod
-    async def get_current_user(token: Annotated[str, Depends(get_token_from_cookies)]):  # oauth2_scheme)]):
+    async def get_current_user(token: Annotated[str, Depends(get_token_from_cookies)]):
         credentials_exception = HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials",

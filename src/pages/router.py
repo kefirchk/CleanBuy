@@ -1,11 +1,12 @@
 from typing import Annotated, List
 
-from fastapi import APIRouter, Request, Depends, HTTPException, status
+from fastapi import APIRouter, Request, Depends
 from fastapi.templating import Jinja2Templates
 
 from src.users_crud.schemas import UserRead
 from src.auth import Authenticator
 from src.users_crud.router import get_users, get_me
+
 
 router = APIRouter(
     prefix="/pages",
@@ -56,4 +57,3 @@ async def get_account_page(
             "current_user": current_user
         }
     )
-

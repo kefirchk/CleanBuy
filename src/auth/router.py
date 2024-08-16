@@ -37,5 +37,5 @@ async def login_for_access_token(
 @router.get("/logout")
 async def logout(request: Request):
     response = RedirectResponse(url="/pages/home")
-    response.delete_cookie("Authorization")  # Удаляем куки
+    response.delete_cookie("Authorization")
     return response

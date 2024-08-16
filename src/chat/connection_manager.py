@@ -1,8 +1,4 @@
 from fastapi import WebSocket
-from sqlalchemy import insert
-
-from src.chat import MessageOrm
-from src.database import new_session
 
 
 class ConnectionManager:
@@ -27,15 +23,6 @@ class ConnectionManager:
         for connection in self.active_connections:
             if connection not in exclude_conn:
                 await connection.send_text(message)
-
-    @staticmethod
-    async def add_message_to_db(message: str):
-        async with new_session() as session:
-            stmt = insert(MessageOrm).values(
-                message=message
-            )
-            await session.execute(stmt)
-            await session.commit()
 
 
 manager = ConnectionManager()

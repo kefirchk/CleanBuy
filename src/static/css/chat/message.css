@@ -2,8 +2,8 @@
     margin-bottom: 10px;
     padding: 10px;
     border-radius: 8px;
-    background-color: #f9f9f9; /* Общий фон */
-    border: 2px solid #f9f9f9; /* Цвет рамки будет изменяться */
+    background-color: #f9f9f9;
+    border: 2px solid #f9f9f9;
 }
 
 .message-header {
@@ -25,23 +25,20 @@
     margin-left: 10px;
 }
 
-/* Специфические стили для отправленных сообщений */
 .message-item.sent {
-    border-color: #d4edda; /* Зеленая рамка */
+    border-color: #d4edda;
     background-color: #d4edda;
     text-align: right;
     margin-left: auto;
 }
 
-/* Специфические стили для полученных сообщений */
 .message-item.received {
-    border-color: #cecece; /* Белая рамка */
-    background-color: #cecece; /* Фон остается */
+    border-color: #cecece;
+    background-color: #cecece;
     text-align: left;
     margin-right: auto;
 }
 
-/* Центрирование текста в заголовке сообщения */
 .sent .message-header {
     justify-content: flex-end;
 }

@@ -15,8 +15,8 @@ document.getElementById('closeRegister').onclick = function() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    var roleSelect = document.getElementById('role');
-    var buyerInfoSection = document.getElementById('buyerInfo');
+    let roleSelect = document.getElementById('role');
+    let buyerInfoSection = document.getElementById('buyerInfo');
 
     roleSelect.addEventListener('change', function() {
         if (roleSelect.value === 'BUYER') {
@@ -26,7 +26,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Инициализация состояния при загрузке страницы
     if (roleSelect.value === 'BUYER') {
         buyerInfoSection.style.display = 'block';
     } else {
@@ -45,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const removeButton = document.createElement('button');
         removeButton.type = 'button';
         removeButton.className = 'country-button';
-        removeButton.textContent = '-'; // Символ для кнопки удаления
+        removeButton.textContent = '-';
         removeButton.addEventListener('click', function() {
             countryList.removeChild(removeButton.parentElement);
         });

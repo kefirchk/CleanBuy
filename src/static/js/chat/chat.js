@@ -1,9 +1,9 @@
-const searchForUser = () => {
-    const searchInputValue = document.getElementById("user_search").value;
-    window.location.href = `/pages/chat/?username=${searchInputValue}`;
-}
-
 window.onload = () => {
+    const searchForUser = () => {
+        const searchInputValue = document.getElementById("user_search").value;
+        window.location.href = `/pages/chat/?username=${searchInputValue}`;
+    }
+
     const searchInput = document.getElementById("user_search");
     searchInput.addEventListener("keydown", function(event) {
         if (event.key === "Enter") {
@@ -19,23 +19,15 @@ window.onload = () => {
             const other_user_id = parseInt(this.getAttribute("data-other_user_id"));
             const username = this.getAttribute("data-username");
 
-            console.log(current_user_id);
-            console.log(other_user_id);
-            console.log(username);
-
             // Get chat_id
             const response = await fetch(`/chat/id?user1_id=${current_user_id}&user2_id=${other_user_id}`);
             const data = await response.json();
             const chat_id = data.chat_id;
 
-            console.log("CHAT ID:", chat_id)
-
             openChat(current_user_id, other_user_id, username, chat_id);
         });
     });
 };
-
-
 
 
 function openChat(current_user_id, other_user_id, username, chat_id) {
@@ -52,13 +44,16 @@ function openChat(current_user_id, other_user_id, username, chat_id) {
     let client_id = Date.now()
     let ws = new WebSocket(`wss://localhost:443/chat/ws/${client_id}`);
 
-    // Messages from server:
+    // Handler for server messages:
     ws.onmessage = function(event) {
         const message_data = JSON.parse(event.data);
-        const displayMsg = generateMessageWithStyles(message_data)
-        append_message(displayMsg, false, message_data.sender_id === current_user_id);
+        if (message_data.chat_id === chat_id) {
+            const displayMsg = generateMessageWithStyles(message_data);
+            append_message(displayMsg, false, message_data.sender_id === current_user_id);
+        }
     };
 
+    // Handler for Enter key in the chat
     const chatForm = document.getElementById("chat_form");
     chatForm.addEventListener("submit", function(event) {
         event.preventDefault();
@@ -67,34 +62,31 @@ function openChat(current_user_id, other_user_id, username, chat_id) {
 
     function sendMessage() {
         const input = document.getElementById("messageText");
-
         const timestamp = new Date().toLocaleString('en-GB', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
-    }).replace(/(\d+)\/(\d+)\/(\d+),/, '$3-$2-$1');
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        }).replace(/(\d+)\/(\d+)\/(\d+),/, '$3-$2-$1');
 
-        // Формируем сообщение для отправки
         const message = {
             chat_id: chat_id,
             sender_id: current_user_id,
             message: input.value,
             username: "You",
-            timestamp: timestamp  // Добавляем текущую временную метку
+            timestamp: timestamp
         };
 
-        // Отправляем сообщение через WebSocket
+        // Send a message through WebSocket
         ws.send(JSON.stringify(message));
 
+        // Add the message on the screen
         const displayMsg = generateMessageWithStyles(message);
-
-        // Добавляем сообщение в интерфейс
         append_message(displayMsg, false, true);
 
-        // Очищаем поле ввода
+        // Clean input field
         input.value = '';
     }
 
@@ -105,27 +97,19 @@ function openChat(current_user_id, other_user_id, username, chat_id) {
         if (isHeader) {
             message.classList.add('message-header');
         } else {
-
             message.classList.add('message-item');
             if (isSentByCurrentUser) {
                 message.classList.add('sent');
             } else {
                 message.classList.add('received');
             }
-
-            // message.classList.add('message-item', 'bg-white', 'p-2', 'mb-1', 'rounded-lg', 'shadow');
-
         }
 
-        message.innerHTML = msg;  // Вставляем HTML в сообщение
+        message.innerHTML = msg;
         messages.appendChild(message);
-
-        // Прокручиваем к последнему сообщению
         messages.scrollTop = messages.scrollHeight;
     }
 
-
-    // Load last messages
     async function getLastMessages() {
         const response = await fetch(`/chat/last_messages/${chat_id}`, { method: 'GET' });
         return response.json();
