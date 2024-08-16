@@ -42,7 +42,11 @@
             <li class="text-3xl font-bold"><a href="/pages/home">CleanBuy</a></li>
         </ul>
         <ul class="flex items-center">
-            <li><a href="#">My Account</a></li>
+            {% if current_user %}
+                <li><a href="/pages/chat">Chat</a></li>
+                <li><a href="/pages/account">My Account</a></li>
+                <li><a href="/auth/logout">Log Out</a></li>
+            {% endif %}
         </ul>
     </nav>
     <hr class="mt-2">

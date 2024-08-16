@@ -35,7 +35,6 @@ class Authenticator:
 
     @staticmethod
     async def get_current_user(token: Annotated[str, Depends(get_token_from_cookies)]):  # oauth2_scheme)]):
-        print("Token  in  get_me:", token)
         credentials_exception = HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials",
@@ -52,3 +51,15 @@ class Authenticator:
         if user is None:
             raise credentials_exception
         return UserRead.from_orm(user)
+
+    @staticmethod
+    async def get_optional_user(request: Request):
+        current_user = None
+        try:
+            token = Authenticator.get_token_from_cookies(request)
+            current_user = await Authenticator.get_current_user(token)
+        except HTTPException as e:
+            if e.status_code != status.HTTP_401_UNAUTHORIZED:
+                raise e  # если это другая ошибка, а не 401, пропускаем её
+        finally:
+            return current_user
