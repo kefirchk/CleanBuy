@@ -22,7 +22,7 @@ async def get_home_page(
         optional_user: Annotated[UserRead, Depends(Authenticator.get_optional_user)]
 ):
     return templates.TemplateResponse(
-        "home.html", {
+        "home/home.html", {
             "request": request,
             "current_user": optional_user
         }
@@ -38,7 +38,7 @@ async def get_chat_page(
 ):
     users = [u for u in all_users if u.username.startswith(username)]
     return templates.TemplateResponse(
-        "chat.html", {
+        "chat/chat.html", {
             "request": request,
             "users": users,
             "current_user": current_user
@@ -52,7 +52,7 @@ async def get_account_page(
         current_user: UserRead = Depends(get_me)
 ):
     return templates.TemplateResponse(
-        "account.html", {
+        "account/account.html", {
             "request": request,
             "current_user": current_user
         }

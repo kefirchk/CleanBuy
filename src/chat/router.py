@@ -3,6 +3,7 @@ from typing import List, Dict
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
+from src.chat.schemas import File
 from src.chat import ChatType, Message, ChatRepo, conn_manager
 
 
@@ -30,7 +31,13 @@ async def get_last_messages(chat_id: int) -> List:
             "message": msg.message,
             "timestamp": msg.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
             "sender_id": msg.sender_id,
-            "username": msg.username
+            "username": msg.username,
+            "file": {
+                "file_url": msg.file_url,
+                "filename": msg.filename,
+                "file_size": msg.file_size,
+                "file_type": msg.file_type
+            } if msg.file_url else None
         }
         for msg in messages
     ]
@@ -43,10 +50,17 @@ async def websocket_endpoint(websocket: WebSocket, client_id: int):
     try:
         while True:
             data = await websocket.receive_text()
+            print("[INFO] Receive message:", data)
             try:
-                msg = Message(**json.loads(data))
-                if msg.message is None:
+                data_dict: dict = json.loads(data)
+                data_dict['file'] = File(**data_dict['file'])
+                msg = Message(**data_dict)
+
+                if msg.message is None and msg.file_url is None:
                     continue
+
+                # if msg.file_url:
+                #     # Если есть файл, то загружаем его на S3
 
                 await ChatRepo.save_message(msg)
                 await conn_manager.broadcast(data, exclude_conn=[websocket])

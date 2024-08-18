@@ -1,5 +1,6 @@
 from sqlalchemy import select, func
 
+from src.chat.models import FileOrm
 from src.database import new_session
 from src.chat import ChatType, Message, MessageOrm, ChatOrm, ChatParticipantsOrm
 from src.users_crud.models import UserOrm
@@ -39,9 +40,15 @@ class ChatRepo:
                     MessageOrm.message,
                     MessageOrm.timestamp,
                     MessageOrm.sender_id,
-                    UserOrm.username
+                    MessageOrm.file,
+                    UserOrm.username,
+                    FileOrm.file_url,
+                    FileOrm.filename,
+                    FileOrm.file_size,
+                    FileOrm.file_type
                 )
                 .join(UserOrm, MessageOrm.sender_id == UserOrm.id)
+                .outerjoin(FileOrm, MessageOrm.file_id == FileOrm.id)
                 .where(MessageOrm.chat_id == chat_id)
                 .order_by(MessageOrm.id.desc())
             )
@@ -54,10 +61,12 @@ class ChatRepo:
     @staticmethod
     async def save_message(message: Message):
         async with new_session() as session:
+            file_orm = FileOrm(**message.file.model_dump())
             new_message = MessageOrm(
                 message=message.message,
                 sender_id=message.sender_id,
-                chat_id=message.chat_id
+                chat_id=message.chat_id,
+                file=file_orm
             )
             session.add(new_message)
             await session.commit()

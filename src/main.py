@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
+from src.s3 import S3Client
 from src.database import create_tables
 from src.routers import routers
 from src.urls import origins, allow_methods, allow_headers
@@ -12,6 +13,18 @@ from src.exception_handlers import exception_handlers
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # s3_client = S3Client(
+    #     access_key="",
+    #     secret_key="",
+    #     endpoint_url="",  # для Selectel используйте https://s3.storage.selcloud.ru
+    #     bucket_name="",
+    # )
+
+    # Проверка, что мы можем загрузить, скачать и удалить файл
+    # await s3_client.upload_file("test.txt")
+    # await s3_client.get_file("test.txt", "text_local_file.txt")
+    # await s3_client.delete_file("test.txt")
+
     print("Application is started")
     # await create_tables()           # If you don't use Alembic, then you can use this
     # print("Database is ready")

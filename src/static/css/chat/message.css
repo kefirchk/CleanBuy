@@ -1,11 +1,38 @@
-.message-item {
-    margin-bottom: 10px;
+/* Основные стили для контейнера сообщений */
+#messages {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
     padding: 10px;
-    border-radius: 8px;
     background-color: #f9f9f9;
-    border: 2px solid #f9f9f9;
+    border-radius: 8px;
+    overflow-y: auto;
 }
 
+/* Стили для отдельных сообщений */
+.message-item {
+    max-width: 80%;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    word-wrap: break-word;
+    display: inline-block;
+}
+
+/* Стили для сообщений, отправленных текущим пользователем */
+.message-item.sent {
+    align-self: flex-end;
+    background-color: #c8eed1;
+}
+
+/* Стили для сообщений, полученных от других пользователей */
+.message-item.received {
+    align-self: flex-start;
+    background-color: #ffffff;
+}
+
+/* Стили для заголовка сообщения */
 .message-header {
     font-size: 0.9em;
     color: #555;
@@ -14,35 +41,52 @@
     justify-content: space-between;
 }
 
+/* Стили для времени отправки сообщения */
+.timestamp {
+    font-size: 0.8em;
+    color: #888;
+}
+
+/* Стили для содержимого сообщения */
 .message-body {
     font-size: 1em;
     color: #333;
 }
 
-.timestamp {
+/* Стили для информации о файле */
+.file-details {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.file-icon {
+    font-size: 1.2em;
+    color: #333;
+}
+
+.file-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.file-name {
+    font-weight: bold;
+}
+
+.file-size {
     font-size: 0.8em;
     color: #888;
-    margin-left: 10px;
 }
 
-.message-item.sent {
-    border-color: #d4edda;
-    background-color: #d4edda;
-    text-align: right;
-    margin-left: auto;
+.download-link {
+    display: block;
+    margin-top: 5px;
+    font-size: 0.9em;
+    color: #007bff;
+    text-decoration: none;
 }
 
-.message-item.received {
-    border-color: #cecece;
-    background-color: #cecece;
-    text-align: left;
-    margin-right: auto;
-}
-
-.sent .message-header {
-    justify-content: flex-end;
-}
-
-.received .message-header {
-    justify-content: flex-start;
+.download-link:hover {
+    text-decoration: underline;
 }
