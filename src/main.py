@@ -4,8 +4,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
+from src.kafka import kafka_client, kafka_config, create_topic
 from src.s3 import S3Client
-from src.database import create_tables
 from src.routers import routers
 from src.urls import origins, allow_methods, allow_headers
 from src.exception_handlers import exception_handlers
@@ -13,6 +13,8 @@ from src.exception_handlers import exception_handlers
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    print("[INFO] Application is started")
+
     # s3_client = S3Client(
     #     access_key="",
     #     secret_key="",
@@ -25,11 +27,14 @@ async def lifespan(app: FastAPI):
     # await s3_client.get_file("test.txt", "text_local_file.txt")
     # await s3_client.delete_file("test.txt")
 
-    print("Application is started")
-    # await create_tables()           # If you don't use Alembic, then you can use this
-    # print("Database is ready")
+    create_topic(kafka_config.KAFKA_TOPIC)
+    await kafka_client.start()
+    print("[INFO] Kafka is started")
     yield
-    print("Application is closed")
+    await kafka_client.stop()
+    print("[INFO] Kafka is closed")
+
+    print("[INFO] Application is closed")
 
 
 app = FastAPI(title="CleanBuy", lifespan=lifespan)
@@ -62,6 +67,6 @@ app.add_middleware(
 #         ssl_certfile='../certs/cert.pem',
 #         ssl_keyfile='../certs/key.pem'
 #     )
-#
+
 # Use instead in console:
-# uvicorn src.main:app --loop asyncio --host localhost --port 443 --ssl-keyfile=certs/key.pem --ssl-certfile=certs/cert.pem
+# uvicorn src.main:app --host localhost --port 443 --ssl-keyfile=certs/key.pem --ssl-certfile=certs/cert.pem

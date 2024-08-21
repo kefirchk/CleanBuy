@@ -18,6 +18,9 @@ class ChatRepo:
             session.add(ChatParticipantsOrm(chat_id=chat.id, user_id=user2_id))
             await session.commit()
 
+            await session.refresh(chat)
+            return chat
+
     @staticmethod
     async def get_chat_id(user1_id: int, user2_id: int):
         async with new_session() as session:
@@ -61,7 +64,9 @@ class ChatRepo:
     @staticmethod
     async def save_message(message: Message):
         async with new_session() as session:
-            file_orm = FileOrm(**message.file.model_dump())
+            file_orm = None
+            if message.file is not None:
+                file_orm = FileOrm(**message.file.model_dump())
             new_message = MessageOrm(
                 message=message.message,
                 sender_id=message.sender_id,

@@ -3,13 +3,14 @@ from typing import List, Dict
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
+from src.kafka import kafka_config
 from src.chat.schemas import File
 from src.chat import ChatType, Message, ChatRepo, conn_manager
 
 
 router = APIRouter(
     prefix="/chat",
-    tags=["Chat"]
+    tags=["Chat"],
 )
 
 
@@ -46,6 +47,7 @@ async def get_last_messages(chat_id: int) -> List:
 
 @router.websocket("/ws/{client_id}")
 async def websocket_endpoint(websocket: WebSocket, client_id: int):
+    from src.kafka.kafka_client import kafka_client  # нужно подключать именно здесь
     await conn_manager.connect(websocket)
     try:
         while True:
@@ -53,7 +55,8 @@ async def websocket_endpoint(websocket: WebSocket, client_id: int):
             print("[INFO] Receive message:", data)
             try:
                 data_dict: dict = json.loads(data)
-                data_dict['file'] = File(**data_dict['file'])
+                if data_dict['file'] is not None:
+                    data_dict['file'] = File(**data_dict['file'])
                 msg = Message(**data_dict)
 
                 if msg.message is None and msg.file_url is None:
@@ -63,6 +66,9 @@ async def websocket_endpoint(websocket: WebSocket, client_id: int):
                 #     # Если есть файл, то загружаем его на S3
 
                 await ChatRepo.save_message(msg)
+
+                await kafka_client.send_message(kafka_config.KAFKA_TOPIC, str(client_id), msg)
+
                 await conn_manager.broadcast(data, exclude_conn=[websocket])
 
             except json.JSONDecodeError:
@@ -70,4 +76,4 @@ async def websocket_endpoint(websocket: WebSocket, client_id: int):
 
     except WebSocketDisconnect:
         conn_manager.disconnect(websocket)
-        print(f"Client #{client_id} left the chat")
+        print(f"[INFO] Client #{client_id} left the chat")
