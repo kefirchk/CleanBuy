@@ -21,6 +21,6 @@ def create_topic(topic_name, num_partitions=1, replication_factor=1):
     for topic, future in fs.items():
         try:
             future.result()
-            print(f"Topic {topic} created successfully")
+            print(f"[INFO] Topic {topic} created successfully")
         except Exception as e:
-            print(f"Failed to create topic {topic}: {e}")
+            print(f"[ERROR] Failed to create topic {topic}: {e}")

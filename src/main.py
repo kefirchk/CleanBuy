@@ -5,7 +5,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from src.kafka import kafka_client, kafka_config, create_topic
-from src.s3 import S3Client
 from src.routers import routers
 from src.urls import origins, allow_methods, allow_headers
 from src.exception_handlers import exception_handlers
@@ -14,26 +13,12 @@ from src.exception_handlers import exception_handlers
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print("[INFO] Application is started")
-
-    # s3_client = S3Client(
-    #     access_key="",
-    #     secret_key="",
-    #     endpoint_url="",  # для Selectel используйте https://s3.storage.selcloud.ru
-    #     bucket_name="",
-    # )
-
-    # Проверка, что мы можем загрузить, скачать и удалить файл
-    # await s3_client.upload_file("test.txt")
-    # await s3_client.get_file("test.txt", "text_local_file.txt")
-    # await s3_client.delete_file("test.txt")
-
     create_topic(kafka_config.KAFKA_TOPIC)
     await kafka_client.start()
     print("[INFO] Kafka is started")
     yield
     await kafka_client.stop()
     print("[INFO] Kafka is closed")
-
     print("[INFO] Application is closed")
 
 
