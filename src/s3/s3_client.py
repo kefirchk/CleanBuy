@@ -17,12 +17,11 @@ class S3Client:
             bucket_name: str
     ):
         self.config = {
-            # "region_name": "Los Angeles",
-            "aws_access_key_id": "DO52sy279IPjHmX5Q0RT",
-            "aws_secret_access_key": "zvYw0PWeRj8UggqWEDOATPGpMpu7RJS1U3XuMYPI",
-            "endpoint_url": "https://k7m8.la.idrivee2-37.com"  # endpoint_url,
+            "aws_access_key_id": access_key,
+            "aws_secret_access_key": secret_key,
+            "endpoint_url": endpoint_url,
         }
-        self.bucket_name = "cleanbuy-chat-bucket"
+        self.bucket_name = bucket_name
         self.session = get_session()
 
     @asynccontextmanager
@@ -35,7 +34,7 @@ class S3Client:
             file_path: str,
     ):
         print("[INFO] <START UPLOAD_FILE FUNCTION>")
-        object_name = file_path.split("/")[-1]  # /users/artem/cat.jpg
+        object_name = file_path.split("/")[-1]
         try:
             async with self.get_client() as client:
                 with open(file_path, "rb") as file:

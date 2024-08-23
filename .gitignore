@@ -2,13 +2,15 @@ venv
 .idea
 __pycache__
 
-# Must be uncommented:
+# Must be uncommented in prod:
 # certs
 # _envs
 # cov_html
+# migrations
+# alembic.ini
+# pyproject.toml
+# tests
 
 # PyTest:
 .coverage
 .pytest_cache
-
-uploads

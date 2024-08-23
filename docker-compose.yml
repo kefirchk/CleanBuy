@@ -5,13 +5,12 @@ services:
     image: postgres
     container_name: postgres_db
     restart: always
-    env_file:
-      - _envs/.env.db
-      - _envs/.env.auth
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASS}
+    env_file:
+      - _envs/.env.db
     ports:
       - "${DB_PORT}:5432"
     volumes:
@@ -46,10 +45,6 @@ services:
     environment:
       DB_HOST: db
       KAFKA_BOOTSTRAP_SERVERS: kafka:9093
-    env_file:
-      - _envs/.env.db
-      - _envs/.env.auth
-      - _envs/.env.kafka
     ports:
       - "443:443"
 
