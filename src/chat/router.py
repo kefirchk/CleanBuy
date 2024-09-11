@@ -62,9 +62,6 @@ async def websocket_endpoint(websocket: WebSocket, client_id: int):
                 if msg.message is None and msg.file_url is None:
                     continue
 
-                # if msg.file_url:
-                #     # Если есть файл, то загружаем его на S3
-
                 await ChatRepo.save_message(msg)
 
                 await kafka_client.send_message(kafka_config.KAFKA_TOPIC, str(client_id), msg)

@@ -41,17 +41,3 @@ app.add_middleware(
     allow_methods=allow_methods,
     allow_headers=allow_headers,
 )
-
-
-# It doesn't work:
-# if __name__ == "__main__":
-#     uvicorn.run(
-#         app="main:app",
-#         host="localhost",
-#         port=443,
-#         ssl_certfile='../certs/cert.pem',
-#         ssl_keyfile='../certs/key.pem'
-#     )
-
-# Use instead in console:
-# uvicorn src.main:app --host localhost --port 443 --ssl-keyfile=certs/key.pem --ssl-certfile=certs/cert.pem

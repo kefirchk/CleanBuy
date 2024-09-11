@@ -3,7 +3,6 @@ ___
 
 ## Table of Contents
 
-
 - [Overview](#overview)
 - [Requirements](#requirements)
 - [Deploying on Local](#deploying-on-local)
@@ -16,6 +15,7 @@ ___
 - [Author](#author)
 
 ## Overview
+___
 
 ***Cleanbuy*** is an e-commerce platform featuring real-time chat,
 enabling buyers and sellers to negotiate deals using a user-friendly
@@ -28,6 +28,7 @@ web interface. Also, the system supports registration and user authentication.
 ✅ https://localhost:443/pages/account - page for viewing account information.
 
 ## Requirements⚠️️
+___
 
 - Python 3.8+
 - FastAPI
